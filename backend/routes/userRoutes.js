@@ -1,11 +1,14 @@
 import express from "express";
-import { getUsers } from "../controllers/userController.js";
+import { getUsers, getCurrentUser } from "../controllers/userController.js";
 import protect from "../middleware/authMiddleware.js";
+import User from "../models/User.js";
 
 const router = express.Router();
 
 // router.get("/", protect, getUsers);
 router.get("/", getUsers); // ✅ REMOVE protect
+router.get("/me", protect, getCurrentUser);
+
 router.post("/add", async (req, res) => {
   try {
     const { email } = req.body;
