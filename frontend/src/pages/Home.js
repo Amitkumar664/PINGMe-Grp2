@@ -2,69 +2,112 @@ import { Link } from "react-router-dom";
 
 function Home() {
   return (
-    <div className="h-screen bg-[#0b141a] text-white flex">
+    <div className="min-h-screen flex flex-col text-white">
 
-      <div className="hidden md:flex flex-col w-1/3 bg-[#111b21] border-r border-gray-800">
+     {/* ================= HERO SECTION ================= */}
+<div className="relative flex flex-1 items-center justify-center px-6 overflow-hidden">
 
-        <div className="p-4 bg-[#202c33] flex items-center justify-between">
-          <h1 className="text-xl font-semibold">PingMe</h1>
-        </div>
+  {/* 🎥 FULL BACKGROUND VIDEO */}
+  <video
+    src="/video.mp4"
+    autoPlay
+    loop
+    muted
+    playsInline
+    className="absolute inset-0 w-full h-full object-cover -z-20"
+  />
 
-        <div className="flex-1 overflow-y-auto p-3 space-y-3">
-          <div className="bg-[#202c33] p-3 rounded-lg">
-            <p className="font-medium">Amit</p>
-            <p className="text-sm text-gray-400">Hey! 👋</p>
-          </div>
+  {/* 🔮 DARK + PURPLE OVERLAY (IMPORTANT FOR READABILITY) */}
+  <div className="absolute inset-0 bg-gradient-to-br 
+  from-[#14001f]/80 via-[#240046]/70 to-[#3c096c]/80 -z-10" />
 
-          <div className="bg-[#202c33] p-3 rounded-lg">
-            <p className="font-medium">Rahul</p>
-            <p className="text-sm text-gray-400">Kya haal hai?</p>
-          </div>
+  {/* ✨ OPTIONAL GLOW EFFECT */}
+  <div className="absolute top-[-100px] left-[-100px] w-[300px] h-[300px] 
+  bg-purple-600 rounded-full blur-[120px] opacity-40 animate-pulse -z-10" />
 
-          <div className="bg-[#202c33] p-3 rounded-lg">
-            <p className="font-medium">Neha</p>
-            <p className="text-sm text-gray-400">Let's catch up!</p>
-          </div>
-        </div>
+  <div className="absolute bottom-[-100px] right-[-100px] w-[300px] h-[300px] 
+  bg-violet-500 rounded-full blur-[120px] opacity-40 animate-pulse -z-10" />
 
+
+  {/* ================= CONTENT ================= */}
+  <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl w-full z-10">
+
+    {/* LEFT */}
+    <div>
+      <h2 className="text-5xl font-bold leading-tight mb-6 
+      bg-gradient-to-r from-purple-300 to-violet-400 
+      bg-clip-text text-transparent">
+        Simple. Secure. <br /> Real-time Messaging 💬
+      </h2>
+
+      <p className="text-purple-200/90 mb-8 text-lg">
+        With PingMe, connect instantly with your friends. 
+        Experience fast, secure, and seamless chatting.
+      </p>
+
+      <div className="flex gap-4">
+        <Link
+          to="/login"
+          className="px-7 py-3 rounded-full text-lg font-medium 
+          bg-gradient-to-r from-purple-500 to-violet-600
+          hover:from-purple-600 hover:to-violet-700
+          transition-all duration-300 shadow-lg hover:shadow-purple-500/40" style={{ textDecoration: "none",color: "white" }}
+        >
+          Start Chat 🚀
+        </Link>
+
+        <Link
+          to="/register"
+          className="px-7 py-3 rounded-full text-lg font-medium 
+          border border-purple-300/40
+          hover:bg-white/10 transition-all duration-300" style={{ textDecoration: "none",color: "white" }}
+        >
+          Create Account
+        </Link>
       </div>
+    </div>
 
-      <div className="flex flex-col flex-1">
 
-        <div className="bg-[#202c33] p-4 flex items-center justify-between border-b border-gray-800">
-          <div>
-            <p className="font-semibold">Amit</p>
-            <p className="text-xs text-gray-400">online</p>
-          </div>
+    {/* RIGHT (OPTIONAL CONTENT / REMOVE IF YOU WANT CLEAN LOOK) */}
+    <div className="hidden md:flex justify-center">
+      <div className="bg-white/10 backdrop-blur-lg 
+      p-4 rounded-2xl shadow-2xl w-[320px] border border-white/10">
+
+        <div className="bg-white/10 p-3 rounded-lg mb-3">
+          <p className="font-semibold text-purple-200">Amit</p>
+          <p className="text-xs text-purple-300/60">online</p>
         </div>
 
-        <div className="flex-1 p-6 space-y-3 overflow-y-auto bg-[#0b141a]">
-          <div className="bg-[#202c33] p-3 rounded-lg w-fit">
-            Hello bhai 😄
-          </div>
-          <div className="bg-[#005c4b] p-3 rounded-lg w-fit ml-auto">
+        <div className="space-y-2 text-sm">
+          <div className="bg-purple-600 p-2 rounded-lg w-fit ml-auto">
             Hey! 👋
           </div>
-          <div className="bg-[#005c4b] p-3 rounded-lg w-fit ml-auto">
+          <div className="bg-white/10 p-2 rounded-lg w-fit">
+            Hello bhai 😄
+          </div>
+          <div className="bg-purple-600 p-2 rounded-lg w-fit ml-auto">
             PingMe ready hai 🚀
           </div>
         </div>
 
-        <div className="p-4 bg-[#202c33] flex items-center gap-3">
-          <input
-            type="text"
-            placeholder="Type a message"
-            className="flex-1 bg-[#2a3942] p-3 rounded-full outline-none text-sm"
-          />
-          <Link
-            to="/chat"
-            className="bg-[#00a884] px-5 py-2 rounded-full text-sm hover:bg-[#019875] transition"
-          >
-            Send
-          </Link>
-        </div>
-
       </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+     {/* ================= FOOTER ================= */}
+<div className="w-full py-4 px-8 text-center 
+bg-gradient-to-r from-[#14001f] via-[#240046] to-[#3c096c] 
+border-t border-white/10 shadow-inner">
+
+  <p className="text-sm text-purple-300/80">
+    Built with ❤️ by <span className="text-purple-200 font-medium">Amit</span> | PingMe 2026
+  </p>
+
+</div>
 
     </div>
   );
