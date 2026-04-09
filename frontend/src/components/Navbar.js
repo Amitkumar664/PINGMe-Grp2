@@ -19,10 +19,11 @@ function Navbar() {
           to="/"
           className={({ isActive }) =>
             `px-4 py-2 rounded-md text-sm font-medium no-underline
+            border border-purple-400/30
             transition-all duration-300
             ${isActive
-              ? "bg-purple-600 text-white shadow-md"
-              : "text-purple-200 hover:bg-purple-500/20 hover:text-white"
+              ? "bg-purple-500 text-white"
+              : "text-purple-200 hover:bg-purple-500/20 hover:border-purple-400/60"
             }`
           }
         >
@@ -48,13 +49,15 @@ function Navbar() {
         {/* Register (Primary CTA) */}
         <NavLink
           to="/register"
-          className="px-5 py-2 rounded-full text-sm font-semibold 
-          no-underline text-white
-          bg-gradient-to-r from-purple-500 to-violet-600
-          hover:from-purple-600 hover:to-violet-700
-          active:scale-95
-          transition-all duration-300
-          shadow-lg hover:shadow-purple-500/40"
+         className={({ isActive }) =>
+            `px-4 py-2 rounded-md text-sm font-medium no-underline
+            border border-purple-400/30
+            transition-all duration-300
+            ${isActive
+              ? "bg-purple-500 text-white"
+              : "text-purple-200 hover:bg-purple-500/20 hover:border-purple-400/60"
+            }`
+          }
         >
           Register
         </NavLink>

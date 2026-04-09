@@ -1,8 +1,6 @@
 import express from "express";
-//import { getUsers } from "../controllers/userController.js";
 import protect from "../middleware/authMiddleware.js";
 import { getMyChatUsers } from "../controllers/userController.js";
-//import protect from "../middleware/authMiddleware.js";
 import User from "../models/User.js";
 
 
@@ -10,8 +8,7 @@ const router = express.Router();
 router.get("/my-chats", protect, getMyChatUsers);
 router.get("/", protect, getMyChatUsers);
 
-// router.get("/", protect, getUsers);
-//router.get("/", getUsers); // ✅ REMOVE protect
+
 router.post("/add", async (req, res) => {
   try {
     const { email } = req.body;

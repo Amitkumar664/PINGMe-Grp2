@@ -19,7 +19,7 @@ export const sendMessage = async (req, res) => {
 };
 
 // get messages between 2 users
-// import Message from "../models/Message.js"; 
+
 
 export const getMessages = async (req, res) => {
   try {
