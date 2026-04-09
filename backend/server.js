@@ -44,9 +44,7 @@ io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
   // join
-  socket.on("join", (userId) => {
-    onlineUsers[userId] = socket.id;
-  });
+
 
   // 🔥 JOIN
   socket.on("join", (userId) => {
@@ -81,8 +79,39 @@ io.on("connection", (socket) => {
   });
 
   // 🔥 SEND MESSAGE (FINAL FIX)
+  // socket.on("sendMessage", async ({ senderId, receiverId, text, image }) => {
+  //   try {
+  //     const isOnline = onlineUsers[receiverId] ? true : false;
+  //     console.log("Incoming:", { senderId, receiverId, text });
+  //     const newMessage = await Message.create({
+  //       senderId,
+  //       receiverId,
+  //       text: text || "",
+  //       image,
+  //       delivered: isOnline, // 🔥 important
+  //     });
+
+  //     // receiver ko bhejo (agar online)
+  //     if (isOnline) {
+  //       io.to(onlineUsers[receiverId]).emit("receiveMessage", newMessage);
+  //     }
+
+  //     // sender ko bhejo
+  //     io.to(onlineUsers[senderId]).emit("receiveMessage", newMessage);
+
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // });
   socket.on("sendMessage", async ({ senderId, receiverId, text, image }) => {
   try {
+    console.log("Incoming:", { senderId, receiverId });
+
+    if (!senderId || !receiverId) {
+      console.log("❌ Missing senderId or receiverId");
+      return;
+    }
+
     const isOnline = onlineUsers[receiverId] ? true : false;
 
     const newMessage = await Message.create({
@@ -90,22 +119,24 @@ io.on("connection", (socket) => {
       receiverId,
       text: text || "",
       image,
-      delivered: isOnline, // 🔥 important
+      delivered: isOnline,
     });
 
-    // receiver ko bhejo (agar online)
+    // receiver
     if (isOnline) {
       io.to(onlineUsers[receiverId]).emit("receiveMessage", newMessage);
     }
 
-    // sender ko bhejo
-    io.to(onlineUsers[senderId]).emit("receiveMessage", newMessage);
+    // sender
+    if (onlineUsers[senderId]) {
+      io.to(onlineUsers[senderId]).emit("receiveMessage", newMessage);
+    }
 
   } catch (err) {
-    console.log(err);
+    console.log("❌ ERROR:", err);
   }
 });
-  
+
 
   // disconnect
   socket.on("disconnect", () => {
