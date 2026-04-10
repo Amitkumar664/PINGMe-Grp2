@@ -1,12 +1,7 @@
 import User from "../models/User.js";
 import Message from "../models/Message.js";
 
-// ❌ OLD (remove this)
-// export const getUsers = async (req, res) => {
-//   const users = await User.find()
-// }
 
-// ✅ NEW (correct logic)
 export const getMyChatUsers = async (req, res) => {
   try {
     const myId = req.user.id; // login user id

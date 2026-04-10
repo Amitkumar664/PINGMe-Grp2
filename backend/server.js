@@ -31,6 +31,7 @@ app.use("/api/users", userRoutes);
 app.use("/uploads", express.static("uploads"));
 app.use("/api/upload", uploadRoutes);
 
+
 // socket setup
 const io = new Server(server, {
   cors: {
@@ -44,9 +45,7 @@ io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
   // join
-  socket.on("join", (userId) => {
-    onlineUsers[userId] = socket.id;
-  });
+
 
   // 🔥 JOIN
   socket.on("join", (userId) => {
@@ -79,33 +78,40 @@ io.on("connection", (socket) => {
     }
     io.emit("onlineUsers", Object.keys(onlineUsers));
   });
-
-  // 🔥 SEND MESSAGE (FINAL FIX)
   socket.on("sendMessage", async ({ senderId, receiverId, text, image }) => {
-  try {
-    const isOnline = onlineUsers[receiverId] ? true : false;
+    try {
+      console.log("Incoming:", { senderId, receiverId });
 
-    const newMessage = await Message.create({
-      senderId,
-      receiverId,
-      text: text || "",
-      image,
-      delivered: isOnline, // 🔥 important
-    });
+      if (!senderId || !receiverId) {
+        console.log("❌ Missing senderId or receiverId");
+        return;
+      }
 
-    // receiver ko bhejo (agar online)
-    if (isOnline) {
-      io.to(onlineUsers[receiverId]).emit("receiveMessage", newMessage);
+      const isOnline = onlineUsers[receiverId] ? true : false;
+
+      const newMessage = await Message.create({
+        senderId,
+        receiverId,
+        text: text || "",
+        image,
+        delivered: isOnline,
+      });
+
+      // receiver
+      if (isOnline) {
+        io.to(onlineUsers[receiverId]).emit("receiveMessage", newMessage);
+      }
+
+      // sender
+      if (onlineUsers[senderId]) {
+        io.to(onlineUsers[senderId]).emit("receiveMessage", newMessage);
+      }
+
+    } catch (err) {
+      console.log("❌ ERROR:", err);
     }
+  });
 
-    // sender ko bhejo
-    io.to(onlineUsers[senderId]).emit("receiveMessage", newMessage);
-
-  } catch (err) {
-    console.log(err);
-  }
-});
-  
 
   // disconnect
   socket.on("disconnect", () => {
