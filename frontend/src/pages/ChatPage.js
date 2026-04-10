@@ -89,6 +89,34 @@ const handleLogout = () => {
       .catch((err) => console.log("ERROR fetching users:", err.response?.data || err.message));
   }, [token]);
 
+  useEffect(() => {
+  const fetchChatUsers = async () => {
+    try {
+      const res = await api.get("/api/users/my-chats");
+      setUsers(res.data);
+    } catch (err) {
+      console.error("Error fetching chat users:", err);
+    }
+  };
+
+  fetchChatUsers();
+}, []);
+useEffect(() => {
+  if (!token) return;
+
+  api.get("/api/users/my-chats", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((res) => setUsers(res.data))
+    .catch((err) =>
+      console.log(
+        "ERROR fetching chat users:",
+        err.response?.data || err.message
+      )
+    );
+}, [token]);
   // ✅ Add user
   // const handleAddUser = async () => {
   //   if (!newUserEmail) return;
