@@ -20,9 +20,14 @@ function ChatPage() {
   const inputRef = useRef();
 
   // ✅ FIX: Get token and senderId securely from local storage instead of URL
-  const token = localStorage.getItem("token");
-  const senderId = localStorage.getItem("userId");
-
+  // const token = localStorage.getItem("token");
+  // const senderId = localStorage.getItem("userId");
+  const token = sessionStorage.getItem("token");
+const senderId = sessionStorage.getItem("userId");
+const handleLogout = () => {
+  sessionStorage.clear();
+  window.location.href = "/login";
+};
   // ✅ Emoji select
   const handleEmoji = (emojiData) => {
     setMessage((prev) => prev + emojiData.emoji);

@@ -63,9 +63,11 @@ function Login() {
       //localStorage.setItem("token", res.data.token);
 
       // ✅ store userId
-      localStorage.setItem("userId", res.data.user._id);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("userId", res.data.user._id);
+      // localStorage.setItem("userId", res.data.user._id);
+      // localStorage.setItem("token", res.data.token);
+      // localStorage.setItem("userId", res.data.user._id);
+      sessionStorage.setItem("userId", res.data.user._id);
+sessionStorage.setItem("token", res.data.token);
 const senderId = localStorage.getItem("userId");
 
 console.log("SENDER ID:", senderId);

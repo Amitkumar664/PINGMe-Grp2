@@ -14,6 +14,7 @@ router.get("/", protect, async (req, res) => {
 
   res.json(users);
 });
+
 router.post("/add", protect, async (req, res) => {
   try {
     const { email } = req.body;
