@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import socket from "../services/socket";
 import EmojiPicker from "emoji-picker-react";
 import api from "../services/api";
-
+import { FaSmile } from "react-icons/fa";
 function ChatPage() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -23,18 +23,37 @@ function ChatPage() {
   // const token = localStorage.getItem("token");
   // const senderId = localStorage.getItem("userId");
   const token = sessionStorage.getItem("token");
-const senderId = sessionStorage.getItem("userId");
-const handleLogout = () => {
-  sessionStorage.clear();
-  window.location.href = "/login";
-};
-  // ✅ Emoji select
-  const handleEmoji = (emojiData) => {
-    setMessage((prev) => prev + emojiData.emoji);
-    setTimeout(() => inputRef.current.focus(), 0);
+  const senderId = sessionStorage.getItem("userId");
+  const handleLogout = () => {
+    sessionStorage.clear();
+    window.location.href = "/login";
   };
+  // ✅ Emoji select
+  // const handleEmoji = (emojiData) => {
+  //   setMessage((prev) => prev + emojiData.emoji);
+  //   setTimeout(() => inputRef.current.focus(), 0);
+  // // };
+  // const handleEmoji = (emojiData) => {
+  //   setMessage((prev) => prev + emojiData.emoji);
+  //   setShowEmoji(false);
+  //   inputRef.current?.focus();
+  // };
+  const handleEmoji = (emojiData) => {
+  setMessage((prev) => prev + emojiData.emoji);
+  inputRef.current?.focus(); // Cursor wapas input par le aata hai
+};
 
   // ✅ Close emoji on outside click
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (emojiRef.current && !emojiRef.current.contains(event.target)) {
+  //       setShowEmoji(false);
+  //     }
+  //   };
+
+  //   document.addEventListener("click", handleClickOutside);
+  //   return () => document.removeEventListener("click", handleClickOutside);
+  // }, []);
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (emojiRef.current && !emojiRef.current.contains(event.target)) {
@@ -42,10 +61,11 @@ const handleLogout = () => {
       }
     };
 
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
-
   // ✅ Auto scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -90,33 +110,33 @@ const handleLogout = () => {
   }, [token]);
 
   useEffect(() => {
-  const fetchChatUsers = async () => {
-    try {
-      const res = await api.get("/api/users/my-chats");
-      setUsers(res.data);
-    } catch (err) {
-      console.error("Error fetching chat users:", err);
-    }
-  };
+    const fetchChatUsers = async () => {
+      try {
+        const res = await api.get("/api/users/my-chats");
+        setUsers(res.data);
+      } catch (err) {
+        console.error("Error fetching chat users:", err);
+      }
+    };
 
-  fetchChatUsers();
-}, []);
-useEffect(() => {
-  if (!token) return;
+    fetchChatUsers();
+  }, []);
+  useEffect(() => {
+    if (!token) return;
 
-  api.get("/api/users/my-chats", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((res) => setUsers(res.data))
-    .catch((err) =>
-      console.log(
-        "ERROR fetching chat users:",
-        err.response?.data || err.message
-      )
-    );
-}, [token]);
+    api.get("/api/users/my-chats", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => setUsers(res.data))
+      .catch((err) =>
+        console.log(
+          "ERROR fetching chat users:",
+          err.response?.data || err.message
+        )
+      );
+  }, [token]);
   // ✅ Add user
   // const handleAddUser = async () => {
   //   if (!newUserEmail) return;
@@ -135,28 +155,50 @@ useEffect(() => {
   //   }
   // };
   const handleAddUser = async () => {
-  if (!newUserEmail) return;
+    if (!newUserEmail) return;
 
-  try {
-    const res = await api.post("/api/users/add", {
-      email: newUserEmail,
-    });
+    try {
+      const res = await api.post("/api/users/add", {
+        email: newUserEmail,
+      });
 
-    // ✅ add to list
-    setUsers((prev) => {
-      const exists = prev.find(u => u._id === res.data._id);
-      if (exists) return prev;
-      return [...prev, res.data];
-    });
+      // ✅ add to list
+      setUsers((prev) => {
+        const exists = prev.find(u => u._id === res.data._id);
+        if (exists) return prev;
+        return [...prev, res.data];
+      });
 
-    setNewUserEmail("");
-    setShowAddUser(false);
+      setNewUserEmail("");
+      setShowAddUser(false);
 
-  } catch (err) {
-    alert(err.response?.data?.message || "User not found ❌");
-  }
-};
+    } catch (err) {
+      alert(err.response?.data?.message || "User not found ❌");
+    }
+  };
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await api.post("/api/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      socket.emit("sendMessage", {
+        senderId,
+        receiverId,
+        image: res.data.url,
+      });
+    } catch (err) {
+      console.error("File upload error:", err);
+    }
+  };
   // ✅ Fetch messages
   useEffect(() => {
     if (!receiverId || !senderId || !token) return;
@@ -379,30 +421,114 @@ useEffect(() => {
             </button>
           </div> */}
           {receiverId && (
-  <div className="p-3 border-top d-flex bg-white">
-    <input
-      ref={inputRef}
-      type="text"
-      className="form-control me-2"
-      value={message}
-      onChange={handleTyping}
-      placeholder="Type a message..."
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          sendMessage();
-        }
+            // <div className="p-3 border-top d-flex bg-white">
+            //   <input
+            //     ref={inputRef}
+            //     type="text"
+            //     className="form-control me-2"
+            //     value={message}
+            //     onChange={handleTyping}
+            //     placeholder="Type a message..."
+            //     onKeyDown={(e) => {
+            //       if (e.key === "Enter") {
+            //         e.preventDefault();
+            //         sendMessage();
+            //       }
+            //     }}
+            //   />
+            //   <button
+            //     className="btn btn-primary"
+            //     onClick={sendMessage}
+            //     disabled={!message.trim()}
+            //   >
+            //     Send
+            //   </button>
+            // </div>
+            <div className="p-3 border-top d-flex bg-white position-relative">
+              {/* Emoji Button */}
+              {/* <button
+    className="btn btn-light me-2"
+    onClick={() => setShowEmoji(!showEmoji)}
+  >
+    😊
+  </button> */}
+
+
+              <button
+                type="button"
+                className="btn btn-light me-2"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent outside click handler
+                  setShowEmoji((prev) => !prev);
+                }}
+              >
+                <FaSmile size={20} />
+              </button>
+
+              {/* Emoji Picker */}
+              {/* {showEmoji && (
+    <div
+      ref={emojiRef}
+      style={{
+        position: "absolute",
+        bottom: "60px",
+        zIndex: 1000,
       }}
-    />
-    <button
-      className="btn btn-primary"
-      onClick={sendMessage}
-      disabled={!message.trim()}
     >
-      Send
-    </button>
-  </div>
-)}
+      <EmojiPicker onEmojiClick={handleEmoji} />
+    </div>
+  )} */}
+              {showEmoji && (
+                <div
+                  ref={emojiRef}
+                  style={{
+                    position: "absolute",
+                    bottom: "60px",
+                    right: "20px",
+                    zIndex: 9999,
+                  }}
+                  onClick={(e) => e.stopPropagation()} // Prevent closing on click
+                >
+                  <EmojiPicker onEmojiClick={handleEmoji} />
+                </div>
+              )}
+              {/* Message Input */}
+              <input
+                ref={inputRef}
+                type="text"
+                className="form-control me-2"
+                value={message}
+                onChange={handleTyping}
+                placeholder="Type a message..."
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+              />
+              <input
+                type="file"
+                accept="image/*,video/*"
+                onChange={handleFileUpload}
+                style={{ display: "none" }}
+                id="fileInput"
+              />
+
+              <label htmlFor="fileInput" className="btn btn-light me-2">
+                📎
+              </label>
+
+              {/* Send Button */}
+              <button
+                className="btn btn-primary"
+                onClick={sendMessage}
+                disabled={!message.trim()}
+              >
+                Send
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
