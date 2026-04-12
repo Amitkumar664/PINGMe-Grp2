@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import socket from "../services/socket";
 import EmojiPicker from "emoji-picker-react";
 import api from "../services/api";
-import { FaSmile } from "react-icons/fa";
+import { FaSmile, FaPaperPlane, FaSmile  } from "react-icons/fa";
 
 function ChatPage() {
   const [message, setMessage] = useState("");
