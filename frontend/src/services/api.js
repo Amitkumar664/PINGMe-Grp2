@@ -18,7 +18,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "https://pingme-grp2-1.onrender.com",
 });
 
 // ✅ Automatically attach token from sessionStorage

@@ -6,7 +6,7 @@ let socket = null;
 // ✅ Connect socket for a specific user
 export const connectSocket = (userId) => {
   if (!socket) {
-    socket = io("http://localhost:5000", {
+    socket = io("https://pingme-grp2-1.onrender.com", {
       transports: ["websocket"],
     });
   }
