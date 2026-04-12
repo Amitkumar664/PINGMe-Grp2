@@ -9,7 +9,7 @@ function Register() {
 
   const handleRegister = async () => {
     try {
-      const res = await api.post("http://localhost:5000/api/auth/register", {
+      const res = await api.post("https://pingme-grp2-1.onrender.com/api/auth/register", {
         name,
         email,
         password,
