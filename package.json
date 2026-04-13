@@ -1,0 +1,12 @@
+{
+  "name": "chatsphere",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "div": "echo 'div script not defined yet'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
