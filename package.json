@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "chatsphere",
   "version": "1.0.0",
   "description": "",
@@ -10,3 +11,10 @@
   "author": "",
   "license": "ISC"
 }
+=======
+  "dependencies": {
+    "emoji-picker-react": "^4.18.0",
+    "react-icons": "^5.6.0"
+  }
+}
+>>>>>>> e3582eaa8317bdeaf185eb4f2b791bf2d23d430a
