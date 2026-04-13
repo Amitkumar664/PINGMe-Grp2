@@ -21,7 +21,7 @@ function ChatPage() {
   const emojiRef = useRef(null);
   const inputRef = useRef(null);
 
-  const BASE_URL = "https://pingme-grp2-1.onrender.com";
+  const BASE_URL = "http://localhost:5000";
 
   const token = sessionStorage.getItem("token");
   const senderId = sessionStorage.getItem("userId");
