@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import socket from "../services/socket";
 import EmojiPicker from "emoji-picker-react";
 import api from "../services/api";
-import { FaSmile  } from "react-icons/fa";
+import { FaSmile } from "react-icons/fa";
 
 function ChatPage() {
   const [message, setMessage] = useState("");
@@ -21,7 +21,7 @@ function ChatPage() {
   const emojiRef = useRef(null);
   const inputRef = useRef(null);
 
-  const BASE_URL = "https://pingme-grp2-1.onrender.com";
+  const BASE_URL = "http://localhost:5000";
 
   const token = sessionStorage.getItem("token");
   const senderId = sessionStorage.getItem("userId");
