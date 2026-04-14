@@ -1,45 +1,27 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
-//import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // Adding loading and error states for better UX
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
-  const navigate = useNavigate(); // 2. Initialize the hook
+  const navigate = useNavigate();
 
-  // const handleLogin = async (e) => {
-  //   e.preventDefault(); // Prevents page reload on form submit
-  //   setIsLoading(true);
-  //   setError(null);
-
-  //   try {
-  //     const res = await axios.post("http://localhost:5000/api/auth/login", {
-  //       email,
-  //       password,
-  //     });
-
-  //     console.log("Success:", res.data);
-
-  //     // 3. Redirect the user to the chat page immediately
-  //     navigate("/chat");
-
-  //   } catch (err) {
-  //     console.error(err);
-  //     setError(err.response?.data?.message || "Login failed ❌");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+
+    if (!email || !password) {
+      setError("Please fill all fields ⚠️");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const res = await axios.post("https://pingme-grp2-1.onrender.com/api/auth/login", {
@@ -49,23 +31,6 @@ function Login() {
 
       console.log(res.data);
 
-      // ✅ assume backend returns user object
-      // const userId = res.data._id; // or res.data.user._id
-      //const userId = res.data.user._id;
-      //onsole.log("Sender ID:", email);
-      // const userId = res.data._id;
-
-      // store user
-      //localStorage.setItem("userId", userId);
-
-      //navigate("/chat");
-      // ✅ store token
-      //localStorage.setItem("token", res.data.token);
-
-      // ✅ store userId
-      // localStorage.setItem("userId", res.data.user._id);
-      // localStorage.setItem("token", res.data.token);
-      // localStorage.setItem("userId", res.data.user._id);
       sessionStorage.setItem("userId", res.data.user._id);
 sessionStorage.setItem("token", res.data.token);
 const senderId = localStorage.getItem("userId");
@@ -73,8 +38,6 @@ const senderId = localStorage.getItem("userId");
 console.log("SENDER ID:", senderId);
       navigate("/chat");
 
-      // 🔥 IMPORTANT
-      //navigate(`/chat?userId=${userId}`);
 
     } catch (err) {
       setError(err.response?.data?.message || "Login failed ❌");
@@ -119,6 +82,13 @@ console.log("SENDER ID:", senderId);
         </h2>
 
         <form onSubmit={handleLogin}>
+
+           {/* ✅ success message */}
+          {success && (
+            <div className="mb-4 p-3 text-sm text-green-200 bg-green-500/20 border border-green-500/30 rounded-lg text-center">
+              {success}
+            </div>
+          )}
 
           {error && (
             <div className="mb-4 p-3 text-sm text-red-200 bg-red-500/20 border border-red-500/30 rounded-lg text-center">

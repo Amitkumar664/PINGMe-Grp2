@@ -8,6 +8,23 @@ function Register() {
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
+    setIsLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    //basic validation
+    if (!name || !email || !password) {
+      setError("All fields are required ⚠️");
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters 🔒");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const res = await api.post("https://pingme-grp2-1.onrender.com/api/auth/register", {
         name,
@@ -16,7 +33,7 @@ function Register() {
       });
 
       console.log(res.data);
-      alert("Registration successful 🎉");
+      setSuccess("Registration successful 🎉");
 
       // redirect to login
       window.location.href = "/login";
